@@ -1,4 +1,9 @@
 pluginManagement {
+
+    plugins {
+        id("com.google.devtools.ksp")
+    }
+
     repositories {
         gradlePluginPortal()
         google()
