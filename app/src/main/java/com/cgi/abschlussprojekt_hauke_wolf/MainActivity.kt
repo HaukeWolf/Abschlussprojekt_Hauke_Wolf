@@ -9,9 +9,17 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.cgi.abschlussprojekt_hauke_wolf.databinding.ActivityMainBinding
 
+@FunctionTemp(name = "myAmazingFunction")
+interface MyAmazingFunction
+
+@Target(AnnotationTarget.CLASS)
+annotation class FunctionTemp(val name: String)
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

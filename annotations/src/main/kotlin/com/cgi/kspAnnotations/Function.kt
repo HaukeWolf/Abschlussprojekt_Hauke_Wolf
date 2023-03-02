@@ -1,4 +1,4 @@
 package com.cgi.kspAnnotations
 
 @Target(AnnotationTarget.CLASS)
-annotation class Function(val name: String)
+annotation class FunctionTemp(val name: String)
