@@ -20,7 +20,7 @@ class KSP_Porcessor(
         val symbols = resolver.getSymbolsWithAnnotation("com.cgi.abschlussprojekt_hauke_wolf.FunctionTemp")
             .filterIsInstance<KSClassDeclaration>()
 
-        //tempchanges
+        //tempchanges_001
         if (!symbols.iterator().hasNext()) return emptyList()
 
         val file: OutputStream = codeGenerator.createNewFile(
