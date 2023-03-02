@@ -19,6 +19,8 @@ class KSP_Porcessor(
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = resolver.getSymbolsWithAnnotation("com.cgi.abschlussprojekt_hauke_wolf.FunctionTemp")
             .filterIsInstance<KSClassDeclaration>()
+
+        //tempchanges
         if (!symbols.iterator().hasNext()) return emptyList()
 
         val file: OutputStream = codeGenerator.createNewFile(
