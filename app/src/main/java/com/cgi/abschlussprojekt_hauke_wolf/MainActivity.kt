@@ -9,17 +9,21 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.cgi.abschlussprojekt_hauke_wolf.databinding.ActivityMainBinding
 
-@FunctionTemp(name = "myAmazingFunction")
-interface MyAmazingFunction
+@FunctionTemp(name = "tempNameOfAnnotation")
+interface MyAmazingFunction {
+
+    fun main() {
+        println("Hello World!")
+    }
+}
+
 
 @Target(AnnotationTarget.CLASS)
 annotation class FunctionTemp(val name: String)
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MyAmazingFunction {
 
     private lateinit var binding: ActivityMainBinding
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,5 +43,9 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+    }
+
+    override fun main() {
+        super.main()
     }
 }
