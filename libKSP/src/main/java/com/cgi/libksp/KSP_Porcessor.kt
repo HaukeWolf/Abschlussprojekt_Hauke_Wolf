@@ -17,19 +17,19 @@ class KSP_Porcessor(
 
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        val symbols = resolver.getSymbolsWithAnnotation("com.cgi.abschlussprojekt_hauke_wolf.FunctionTemp")
+        val symbols = resolver.getSymbolsWithAnnotation("com.cgi.kspAnnotations.FunctionTemp")
             .filterIsInstance<KSClassDeclaration>()
 
-        //tempchanges_001
+        //tempchanges // aus den Symbols kann man sich strings usw vom AnotationAufruf Holen
         if (!symbols.iterator().hasNext()) return emptyList()
 
         val file: OutputStream = codeGenerator.createNewFile(
             dependencies = Dependencies(false, *resolver.getAllFiles().toList().toTypedArray()),
             packageName = "com.cgi.libKSPGenCode",
-            fileName = "GeneratedFunctionsSelf"
+            fileName = "GeneratedFunctionsSelf003"
         )
 
-        file += "package com.cgi.gen\n"
+        file += "package com.cgi.gen003\n"
 
         symbols.forEach { it.accept(Visitor(file), Unit) }
 
