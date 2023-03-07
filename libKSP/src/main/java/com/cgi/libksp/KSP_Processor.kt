@@ -5,11 +5,12 @@ import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.validate
 import java.io.OutputStream
 
-class KSP_Porcessor(
+class KSP_Processor(
     private val codeGenerator: CodeGenerator,
     private val logger: KSPLogger,
     private val options: Map<String, String>
 ) : SymbolProcessor {
+    constructor() : this()
 
     lateinit var file: OutputStream
     var invoked = false
@@ -34,6 +35,9 @@ class KSP_Porcessor(
             return emptyList()
         }
 
+
+        //mit UnitTests abholen
+        logger.info(options.entries.toString())
 
         file = codeGenerator.createNewFile(Dependencies(false), "", "TestProcessor", "log")
         emit("TestProcessor: init($options)", "")

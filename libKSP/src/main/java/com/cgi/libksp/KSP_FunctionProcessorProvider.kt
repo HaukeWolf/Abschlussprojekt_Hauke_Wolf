@@ -8,7 +8,7 @@ class KSP_FunctionProcessorProvider : SymbolProcessorProvider {
 
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
 
-        return KSP_Porcessor(
+        return KSP_Processor(
             codeGenerator = environment.codeGenerator,
             logger = environment.logger,
             options = environment.options

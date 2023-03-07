@@ -10,19 +10,10 @@ import com.cgi.abschlussprojekt_hauke_wolf.databinding.ActivityMainBinding
 import com.cgi.kspAnnotations.FunctionTemp
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-/*@FunctionTemp(name = "tempNameOfAnnotation")
-interface MyAmazingFunction {
-
-    @FunctionTempFunc(name = "tempFromMainFunc")
-    fun main() {
-        println("Hello World!")
-    }
-}*/
-
 @Target(AnnotationTarget.FUNCTION)
 annotation class FunctionTempFunc(val name: String)
 
-@FunctionTemp(name = "FromMain")
+ @FunctionTemp(name = "FromMain")
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
