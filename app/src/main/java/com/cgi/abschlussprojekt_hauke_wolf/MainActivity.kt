@@ -1,27 +1,29 @@
 package com.cgi.abschlussprojekt_hauke_wolf
 
 import android.os.Bundle
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.cgi.abschlussprojekt_hauke_wolf.databinding.ActivityMainBinding
+import com.cgi.kspAnnotations.FunctionTemp
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
-@FunctionTemp(name = "tempNameOfAnnotation")
+/*@FunctionTemp(name = "tempNameOfAnnotation")
 interface MyAmazingFunction {
 
+    @FunctionTempFunc(name = "tempFromMainFunc")
     fun main() {
         println("Hello World!")
     }
-}
+}*/
 
+@Target(AnnotationTarget.FUNCTION)
+annotation class FunctionTempFunc(val name: String)
 
-@Target(AnnotationTarget.CLASS)
-annotation class FunctionTemp(val name: String)
-
-class MainActivity : AppCompatActivity(), MyAmazingFunction {
+@FunctionTemp(name = "FromMain")
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -34,8 +36,7 @@ class MainActivity : AppCompatActivity(), MyAmazingFunction {
         val navView: BottomNavigationView = binding.navView
 
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
@@ -45,7 +46,7 @@ class MainActivity : AppCompatActivity(), MyAmazingFunction {
         navView.setupWithNavController(navController)
     }
 
-    override fun main() {
+  /*  override fun main() {
         super.main()
-    }
+    }*/
 }
