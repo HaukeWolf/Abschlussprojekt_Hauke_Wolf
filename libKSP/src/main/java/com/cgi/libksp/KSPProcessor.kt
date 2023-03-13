@@ -5,12 +5,11 @@ import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.validate
 import java.io.OutputStream
 
-class KSP_Processor(
+class KSPProcessor(
     private val codeGenerator: CodeGenerator,
     private val logger: KSPLogger,
     private val options: Map<String, String>
 ) : SymbolProcessor {
-    constructor() : this()
 
     lateinit var file: OutputStream
     var invoked = false
@@ -24,9 +23,27 @@ class KSP_Processor(
     }
 
 
+    // Versuche daten Rauszuziehen Klappt noch nicht ganz
+    private fun setupListForTest(resolver: Resolver) {
+
+        var allFilesAsListString: ArrayList<Sequence<KSFile>> = arrayListOf(resolver.getAllFiles())
+
+
+     //   allFilesAsListString.forEach(action = sequence<> {  } ->  )
+
+        val javaFile = codeGenerator.createNewFile(Dependencies(false), "", "tempTest", "txt")
+        javaFile += allFilesAsListString.toString()
+        javaFile += allFilesAsListString.size.toString()
+
+    }
+
+
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = resolver.getSymbolsWithAnnotation("com.cgi.kspAnnotations.FunctionTemp")
             .filterIsInstance<KSClassDeclaration>()
+
+
+
 
         //tempchanges // aus den Symbols kann man sich strings usw vom AnotationAufruf Holen
         if (!symbols.iterator().hasNext()) return emptyList()
@@ -35,6 +52,7 @@ class KSP_Processor(
             return emptyList()
         }
 
+        setupListForTest(resolver)
 
         //mit UnitTests abholen
         logger.info(options.entries.toString())
@@ -81,7 +99,9 @@ class KSP_Processor(
         invoked = true
         return symbols.filterNot { it.validate() }.toList()
     }
-//private val file: OutputStream // in Visitor
+
+
+    //private val file: OutputStream // in Visitor
     inner class Visitor() : KSVisitorVoid() {
 
         override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: Unit) {
