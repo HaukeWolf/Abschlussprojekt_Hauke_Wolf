@@ -105,16 +105,31 @@ class KSPProcessor(
                 allViewModelFileNames.add(allKSFileNames[counter])
             }
         }
+        checkForTowOfAKind(allFragmentFileNames, allViewModelFileNames)
     }
 
-      /*
+    private fun checkForTowOfAKind(
+        allFragmentFileNames: MutableList<String>,
+        allViewModelFileNames: MutableList<String>
+    ) {
 
-      // codeschnipsel zum Testen
-      for (String in allFragmentFileNames) {
+
+
+
+        if(allFragmentFileNames[1].contains(allViewModelFileNames[1]))
+        for (String in allFragmentFileNames) {
             fileKt += ("$String ")
-        }*/
+        }
 
 
+    }
+
+    /*
+
+    // codeschnipsel zum Testen
+    for (String in allFragmentFileNames) {
+          fileKt += ("$String ")
+      }*/
 
 
     //private val file: OutputStream // in Visitor
