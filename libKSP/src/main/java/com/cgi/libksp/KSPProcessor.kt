@@ -22,27 +22,21 @@ class KSPProcessor(
         file += ("$indent$s\n")
     }
 
-
-    // Versuche daten Rauszuziehen Klappt noch nicht ganz
-    private fun setupListForTest(resolver: Resolver) {
-
-        var allFilesAsListString: ArrayList<Sequence<KSFile>> = arrayListOf(resolver.getAllFiles())
+    private val fileKt =
+        codeGenerator.createNewFile(Dependencies(false), "", "ProcessedFiles", "kt")
 
 
-     //   allFilesAsListString.forEach(action = sequence<> {  } ->  )
+    // zwei listen
+    //eine Fragmenten Liste
+    //eine Model Liste
+    // aus den jewaligen listen dann das passende paar raussuchen
 
-        val javaFile = codeGenerator.createNewFile(Dependencies(false), "", "tempTest", "txt")
-        javaFile += allFilesAsListString.toString()
-        javaFile += allFilesAsListString.size.toString()
-
-    }
+    // next = kontrolle ob die Datein im gleichen packet sind
 
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = resolver.getSymbolsWithAnnotation("com.cgi.kspAnnotations.FunctionTemp")
             .filterIsInstance<KSClassDeclaration>()
-
-
 
 
         //tempchanges // aus den Symbols kann man sich strings usw vom AnotationAufruf Holen
@@ -52,7 +46,6 @@ class KSPProcessor(
             return emptyList()
         }
 
-        setupListForTest(resolver)
 
         //mit UnitTests abholen
         logger.info(options.entries.toString())
@@ -60,45 +53,68 @@ class KSPProcessor(
         file = codeGenerator.createNewFile(Dependencies(false), "", "TestProcessor", "log")
         emit("TestProcessor: init($options)", "")
 
-        val javaFile = codeGenerator.createNewFile(Dependencies(false), "", "Generated", "java")
-        javaFile += ("class Generated {}")
-
-        val fileKt = codeGenerator.createNewFile(Dependencies(false), "", "HELLO", "java")
-        fileKt += ("public class HELLO{\n")
-        fileKt += ("public int foo() { return 1234; }\n")
-        fileKt += ("}")
-
         val files = resolver.getAllFiles()
         emit("TestProcessor: process()", "")
 
         for (file in files) {
             emit("TestProcessor: processing ${file.fileName}", "")
-
         }
 
-/*
+        val javaFile = codeGenerator.createNewFile(Dependencies(false), "", "Generated", "java")
+        javaFile += ("class Generated {}")
 
 
-        var counterForTest = 1
+        fileKt += ("public class checkAllProcessedFiles{\n")
+        fileKt += ("val  allProcessedList: MutableList<String> = mutableListOf() \n")
+        fileKt += ("fun allTheProcessedFiles() : MutableList<String> { return allProcessedList }\n")
+        fileKt += ("}")
 
-        val file: OutputStream = codeGenerator.createNewFile(
-            dependencies = Dependencies(false, *resolver.getAllFiles().toList().toTypedArray()),
-            packageName = "com.cgi.libKSPGenCode",
-            fileName = "GeneratedFunctionsSelf" + counterForTest++.toString()
-        )
+        getAllProcessedFiles(resolver)
 
-        file += "package com.cgi.gen003\n"
-
-
-        symbols.forEach { it.accept(Visitor(file), Unit) }
-
-        file.close()
-*/
+        // regex setup
 
         //Konnte nicht verarbeitet werden
         invoked = true
         return symbols.filterNot { it.validate() }.toList()
     }
+
+    private fun getAllProcessedFiles(resolver: Resolver) {
+
+        val allKSFiles = resolver.getAllFiles()
+        val allKSFileNames: MutableList<String> = mutableListOf()
+
+        for (file in allKSFiles) {
+            allKSFileNames.add(file.fileName)
+        }
+        sortFilesByFunction(allKSFileNames)
+    }
+
+    private fun sortFilesByFunction(allKSFileNames: MutableList<String>) {
+
+        val sortStringFragment = "Fragment"
+        val sortStringViewModel = "ViewModel"
+
+        val allFragmentFileNames: MutableList<String> = mutableListOf()
+        val allViewModelFileNames: MutableList<String> = mutableListOf()
+
+        for ((counter) in allKSFileNames.withIndex()) {
+
+            if (allKSFileNames[counter].contains(sortStringFragment)) {
+                allFragmentFileNames.add(allKSFileNames[counter])
+            } else if (allKSFileNames[counter].contains(sortStringViewModel)) {
+                allViewModelFileNames.add(allKSFileNames[counter])
+            }
+        }
+    }
+
+      /*
+
+      // codeschnipsel zum Testen
+      for (String in allFragmentFileNames) {
+            fileKt += ("$String ")
+        }*/
+
+
 
 
     //private val file: OutputStream // in Visitor
