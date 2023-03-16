@@ -13,6 +13,8 @@ class KSPProcessor(
 
     lateinit var file: OutputStream
     var invoked = false
+    private val regexFragment = "(.+)Fragment".toRegex()
+    private val regexViewModel = "(.+)ViewModel".toRegex()
 
     operator fun OutputStream.plusAssign(str: String) {
         this.write(str.toByteArray())
@@ -91,20 +93,16 @@ class KSPProcessor(
 
     private fun sortFilesByFunction(allKSFileNames: MutableList<String>) {
 
-        val sortStringFragment = "Fragment"
-        val sortStringViewModel = "ViewModel"
-
         val allFragmentFileNames: MutableList<String> = mutableListOf()
         val allViewModelFileNames: MutableList<String> = mutableListOf()
 
         for ((counter) in allKSFileNames.withIndex()) {
 
-            if (allKSFileNames[counter].contains(sortStringFragment)) {
-                allFragmentFileNames.add(allKSFileNames[counter])
-            } else if (allKSFileNames[counter].contains(sortStringViewModel)) {
-                allViewModelFileNames.add(allKSFileNames[counter])
-            }
+            regexFragment.find(allKSFileNames[counter])?.let { allFragmentFileNames.add(it.value) }
+            regexViewModel.find(allKSFileNames[counter])
+                ?.let { allViewModelFileNames.add(it.value) }
         }
+
         checkForTowOfAKind(allFragmentFileNames, allViewModelFileNames)
     }
 
@@ -113,16 +111,28 @@ class KSPProcessor(
         allViewModelFileNames: MutableList<String>
     ) {
 
+        // "VordererTeil" + "Fragment" als map machen um abzugleichen ob der "Vordere Teil" auch in der anderen map verfügbar ist!!!
+
+        //nicht nach Upper sondern nach Regex Splitten den ich selber rein gebe
+        //wegen z.B. MainTripFragment -> Main Trip Fragment
 
 
+        // var tempString = allFragmentFileNames[0].split(Regex("(?=\\p{Upper})"))
 
-        if(allFragmentFileNames[1].contains(allViewModelFileNames[1]))
-        for (String in allFragmentFileNames) {
-            fileKt += ("$String ")
-        }
+        //fileKt += (tempString[1])
+
+        /*       for (String in tempString) {
+                   fileKt += ("$String ")
+       */
+
+        /*   if(allFragmentFileNames[1].contains(allViewModelFileNames[1]))
+    for (String in allFragmentFileNames) {
+        fileKt += ("$String ")
+    }*/
 
 
     }
+
 
     /*
 
