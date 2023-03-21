@@ -27,15 +27,6 @@ class KSPProcessor(
     private val fileKt =
         codeGenerator.createNewFile(Dependencies(false), "", "ProcessedFiles", "kt")
 
-
-    // zwei listen
-    //eine Fragmenten Liste
-    //eine Model Liste
-    // aus den jewaligen listen dann das passende paar raussuchen
-
-    // next = kontrolle ob die Datein im gleichen packet sind
-
-
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = resolver.getSymbolsWithAnnotation("com.cgi.kspAnnotations.FunctionTemp")
             .filterIsInstance<KSClassDeclaration>()
@@ -48,8 +39,6 @@ class KSPProcessor(
             return emptyList()
         }
 
-
-        //mit UnitTests abholen
         logger.info(options.entries.toString())
 
         file = codeGenerator.createNewFile(Dependencies(false), "", "TestProcessor", "log")
@@ -73,9 +62,6 @@ class KSPProcessor(
 
         getAllProcessedFiles(resolver)
 
-        // regex setup
-
-        //Konnte nicht verarbeitet werden
         invoked = true
         return symbols.filterNot { it.validate() }.toList()
     }
@@ -93,54 +79,45 @@ class KSPProcessor(
 
     private fun sortFilesByFunction(allKSFileNames: MutableList<String>) {
 
-        val allFragmentFileNames: MutableList<String> = mutableListOf()
-        val allViewModelFileNames: MutableList<String> = mutableListOf()
+        val allFragmentFileNames: MutableMap<Int, String> = mutableMapOf()
+        val allViewModelFileNames: MutableMap<Int, String> = mutableMapOf()
 
         for ((counter) in allKSFileNames.withIndex()) {
 
-            regexFragment.find(allKSFileNames[counter])?.let { allFragmentFileNames.add(it.value) }
+            regexFragment.find(allKSFileNames[counter])
+                ?.let { allFragmentFileNames.put(counter, it.value) }
+
             regexViewModel.find(allKSFileNames[counter])
-                ?.let { allViewModelFileNames.add(it.value) }
+                ?.let { allViewModelFileNames.put(counter, it.value) }
         }
+
+        fileKt += (allFragmentFileNames[1]?.let { regexFragment.split(it) }.toString())
 
         checkForTowOfAKind(allFragmentFileNames, allViewModelFileNames)
     }
 
     private fun checkForTowOfAKind(
-        allFragmentFileNames: MutableList<String>,
-        allViewModelFileNames: MutableList<String>
+        allFragmentFileNames: MutableMap<Int, String>,
+        allViewModelFileNames: MutableMap<Int, String>
     ) {
 
-        // "VordererTeil" + "Fragment" als map machen um abzugleichen ob der "Vordere Teil" auch in der anderen map verfügbar ist!!!
 
-        //nicht nach Upper sondern nach Regex Splitten den ich selber rein gebe
-        //wegen z.B. MainTripFragment -> Main Trip Fragment
+        //Test Code:
 
+ /*       for (String in allFragmentFileNames) {
+            fileKt += ("$String ")
+        }
 
-        // var tempString = allFragmentFileNames[0].split(Regex("(?=\\p{Upper})"))
-
-        //fileKt += (tempString[1])
-
-        /*       for (String in tempString) {
-                   fileKt += ("$String ")
-       */
-
-        /*   if(allFragmentFileNames[1].contains(allViewModelFileNames[1]))
-    for (String in allFragmentFileNames) {
-        fileKt += ("$String ")
-    }*/
-
-
+        for (String in allViewModelFileNames) {
+            fileKt += ("$String ")
+        }*/
     }
 
 
-    /*
+    // ! "VordererTeil" + "Fragment" als map machen um abzugleichen ob der "Vordere Teil" auch in der anderen map verfügbar ist!!!
 
-    // codeschnipsel zum Testen
-    for (String in allFragmentFileNames) {
-          fileKt += ("$String ")
-      }*/
-
+    //nicht nach Upper sondern nach Regex Splitten den ich selber rein gebe
+    //wegen z.B. MainTripFragment -> Main Trip Fragment
 
     //private val file: OutputStream // in Visitor
     inner class Visitor() : KSVisitorVoid() {
@@ -155,3 +132,4 @@ class KSPProcessor(
         }
     }
 }
+
