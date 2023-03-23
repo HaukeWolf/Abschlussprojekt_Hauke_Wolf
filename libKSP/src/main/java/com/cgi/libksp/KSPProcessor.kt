@@ -31,8 +31,6 @@ class KSPProcessor(
         val symbols = resolver.getSymbolsWithAnnotation("com.cgi.kspAnnotations.FunctionTemp")
             .filterIsInstance<KSClassDeclaration>()
 
-
-        //tempchanges // aus den Symbols kann man sich strings usw vom AnotationAufruf Holen
         if (!symbols.iterator().hasNext()) return emptyList()
 
         if (invoked) {
@@ -82,16 +80,27 @@ class KSPProcessor(
         val allFragmentFileNames: MutableMap<Int, String> = mutableMapOf()
         val allViewModelFileNames: MutableMap<Int, String> = mutableMapOf()
 
+
+        //Überhaupt nicht hübsch I know =/ wusste mir nicht anders zu helfen //
+        //Update: auch super unnötig hab ich nur noch zu testzwecken drin damit alle Itmes in der map "Gegenüber" liegen
+        var mapPositionsCounter = 1
+
         for ((counter) in allKSFileNames.withIndex()) {
 
             regexFragment.find(allKSFileNames[counter])
-                ?.let { allFragmentFileNames.put(counter, it.value) }
+                ?.let {
+                    allFragmentFileNames[mapPositionsCounter] = it.value
+
+                    mapPositionsCounter++
+                }
 
             regexViewModel.find(allKSFileNames[counter])
-                ?.let { allViewModelFileNames.put(counter, it.value) }
+                ?.let {
+                    allViewModelFileNames[mapPositionsCounter - 1] = it.value
+                }
         }
 
-        fileKt += (allFragmentFileNames[1]?.let { regexFragment.split(it) }.toString())
+        //  fileKt += (allFragmentFileNames[1]?.let { regexFragment.split(it) }.toString())
 
         checkForTowOfAKind(allFragmentFileNames, allViewModelFileNames)
     }
@@ -101,16 +110,30 @@ class KSPProcessor(
         allViewModelFileNames: MutableMap<Int, String>
     ) {
 
+        allFragmentFileNames.put(4,"lala")
+        allViewModelFileNames.put(4,"la")
+
+        if (allFragmentFileNames[4]!!.contains(allViewModelFileNames[4].toString())) {
+            fileKt += (allFragmentFileNames[1].toString())
+
+
+        }
+
+
+        //  fileKt+= (allFragmentFileNames[1].toString())
+        /*  if (allFragmentFileNames[1]?.contains(allViewModelFileNames[1].toString()) == true){
+               fileKt+= "heureka"
+          }*/
 
         //Test Code:
 
- /*       for (String in allFragmentFileNames) {
+        for (String in allFragmentFileNames) {
             fileKt += ("$String ")
         }
 
         for (String in allViewModelFileNames) {
             fileKt += ("$String ")
-        }*/
+        }
     }
 
 
