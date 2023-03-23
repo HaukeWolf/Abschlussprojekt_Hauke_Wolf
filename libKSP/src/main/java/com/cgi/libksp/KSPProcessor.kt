@@ -13,8 +13,13 @@ class KSPProcessor(
 
     lateinit var file: OutputStream
     var invoked = false
+
+    //Gibt es da einen Besseren Weg? Habe bis jetzt keinen anderen weg gefunden
     private val regexFragment = "(.+)Fragment".toRegex()
     private val regexViewModel = "(.+)ViewModel".toRegex()
+
+    val regexFragmentSplit = "Fragment".toRegex()
+    val regexViewModelSplit = "ViewModel".toRegex()
 
     operator fun OutputStream.plusAssign(str: String) {
         this.write(str.toByteArray())
@@ -53,10 +58,6 @@ class KSPProcessor(
         javaFile += ("class Generated {}")
 
 
-        fileKt += ("public class checkAllProcessedFiles{\n")
-        fileKt += ("val  allProcessedList: MutableList<String> = mutableListOf() \n")
-        fileKt += ("fun allTheProcessedFiles() : MutableList<String> { return allProcessedList }\n")
-        fileKt += ("}")
 
         getAllProcessedFiles(resolver)
 
@@ -80,7 +81,6 @@ class KSPProcessor(
         val allFragmentFileNames: MutableMap<Int, String> = mutableMapOf()
         val allViewModelFileNames: MutableMap<Int, String> = mutableMapOf()
 
-
         //Überhaupt nicht hübsch I know =/ wusste mir nicht anders zu helfen //
         //Update: auch super unnötig hab ich nur noch zu testzwecken drin damit alle Itmes in der map "Gegenüber" liegen
         var mapPositionsCounter = 1
@@ -100,59 +100,78 @@ class KSPProcessor(
                 }
         }
 
-        //  fileKt += (allFragmentFileNames[1]?.let { regexFragment.split(it) }.toString())
+    var counter = 1
+    /*  for (element in allFragmentFileNames) {
 
-        checkForTowOfAKind(allFragmentFileNames, allViewModelFileNames)
-    }
+          allFragmentFileNames[counter] = regexFragmentSplit.split(allFragmentFileNames[counter].toString()).toString()
+          counter++
+      }*/
 
-    private fun checkForTowOfAKind(
-        allFragmentFileNames: MutableMap<Int, String>,
-        allViewModelFileNames: MutableMap<Int, String>
-    ) {
-
-        allFragmentFileNames.put(4,"lala")
-        allViewModelFileNames.put(4,"la")
-
-        if (allFragmentFileNames[4]!!.contains(allViewModelFileNames[4].toString())) {
-            fileKt += (allFragmentFileNames[1].toString())
+    // fileKt += (allFragmentFileNames[1]?.let { regexFragmentSplit.split(it) }.toString())
 
 
-        }
+    checkForTowOfAKind(allFragmentFileNames, allViewModelFileNames)
+}
+
+private fun checkForTowOfAKind(
+    allFragmentFileNames: MutableMap<Int, String>,
+    allViewModelFileNames: MutableMap<Int, String>
+) {
 
 
-        //  fileKt+= (allFragmentFileNames[1].toString())
-        /*  if (allFragmentFileNames[1]?.contains(allViewModelFileNames[1].toString()) == true){
-               fileKt+= "heureka"
-          }*/
+    var counter = 1
 
-        //Test Code:
+    if (regexFragmentSplit.split(allFragmentFileNames[1].toString()).contains(
+            regexViewModelSplit.split(allViewModelFileNames[1].toString()).toString()
+        )) {
+        fileKt += (allFragmentFileNames[1].toString())
 
-        for (String in allFragmentFileNames) {
-            fileKt += ("$String ")
-        }
-
-        for (String in allViewModelFileNames) {
-            fileKt += ("$String ")
-        }
+        fileKt+= "heureka"
+    }else{
+        fileKt+= "mad"
     }
 
 
-    // ! "VordererTeil" + "Fragment" als map machen um abzugleichen ob der "Vordere Teil" auch in der anderen map verfügbar ist!!!
 
-    //nicht nach Upper sondern nach Regex Splitten den ich selber rein gebe
-    //wegen z.B. MainTripFragment -> Main Trip Fragment
+    if (allFragmentFileNames[counter]!!.contains(allViewModelFileNames[counter].toString())) {
+           fileKt += (allFragmentFileNames[1].toString())
+       }
 
-    //private val file: OutputStream // in Visitor
-    inner class Visitor() : KSVisitorVoid() {
 
-        override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: Unit) {
-        }
 
-        override fun visitPropertyDeclaration(property: KSPropertyDeclaration, data: Unit) {
-        }
+    //  fileKt+= (allFragmentFileNames[1].toString())
+    /*  if (allFragmentFileNames[1]?.contains(allViewModelFileNames[1].toString()) == true){
+           fileKt+= "heureka"
+      }*/
 
-        override fun visitTypeArgument(typeArgument: KSTypeArgument, data: Unit) {
-        }
+    //Test Code:
+
+    for (String in allFragmentFileNames) {
+        fileKt += ("$String ")
     }
+
+    for (String in allViewModelFileNames) {
+        fileKt += ("$String ")
+    }
+}
+
+
+// ! "VordererTeil" + "Fragment" als map machen um abzugleichen ob der "Vordere Teil" auch in der anderen map verfügbar ist!!!
+
+//nicht nach Upper sondern nach Regex Splitten den ich selber rein gebe
+//wegen z.B. MainTripFragment -> Main Trip Fragment
+
+//private val file: OutputStream // in Visitor
+inner class Visitor() : KSVisitorVoid() {
+
+    override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: Unit) {
+    }
+
+    override fun visitPropertyDeclaration(property: KSPropertyDeclaration, data: Unit) {
+    }
+
+    override fun visitTypeArgument(typeArgument: KSTypeArgument, data: Unit) {
+    }
+}
 }
 
