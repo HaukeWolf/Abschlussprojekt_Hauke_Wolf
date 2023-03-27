@@ -78,82 +78,69 @@ class KSPProcessor(
 
     private fun sortFilesByFunction(allKSFileNames: MutableList<String>) {
 
-        val allFragmentFileNames: MutableMap<Int, String> = mutableMapOf()
-        val allViewModelFileNames: MutableMap<Int, String> = mutableMapOf()
+        val allFragmentFileNames: MutableList<String> = mutableListOf()
+        val allViewModelFileNames: MutableList<String> = mutableListOf()
 
         //Überhaupt nicht hübsch I know =/ wusste mir nicht anders zu helfen //
         //Update: auch super unnötig hab ich nur noch zu testzwecken drin damit alle Itmes in der map "Gegenüber" liegen
-        var mapPositionsCounter = 1
+        var listPositionsCounter = 0
 
         for ((counter) in allKSFileNames.withIndex()) {
 
             regexFragment.find(allKSFileNames[counter])
                 ?.let {
-                    allFragmentFileNames[mapPositionsCounter] = it.value
+                    allFragmentFileNames.add(listPositionsCounter, it.value)
 
-                    mapPositionsCounter++
+                    listPositionsCounter++
                 }
 
             regexViewModel.find(allKSFileNames[counter])
                 ?.let {
-                    allViewModelFileNames[mapPositionsCounter - 1] = it.value
+                    allViewModelFileNames.add(listPositionsCounter - 1, it.value)
                 }
         }
-
-    var counter = 1
-    /*  for (element in allFragmentFileNames) {
-
-          allFragmentFileNames[counter] = regexFragmentSplit.split(allFragmentFileNames[counter].toString()).toString()
-          counter++
-      }*/
-
-    // fileKt += (allFragmentFileNames[1]?.let { regexFragmentSplit.split(it) }.toString())
-
-
-    checkForTowOfAKind(allFragmentFileNames, allViewModelFileNames)
-}
-
-private fun checkForTowOfAKind(
-    allFragmentFileNames: MutableMap<Int, String>,
-    allViewModelFileNames: MutableMap<Int, String>
-) {
-
-
-    var counter = 1
-
-    if (regexFragmentSplit.split(allFragmentFileNames[1].toString()).contains(
-            regexViewModelSplit.split(allViewModelFileNames[1].toString()).toString()
-        )) {
-        fileKt += (allFragmentFileNames[1].toString())
-
-        fileKt+= "heureka"
-    }else{
-        fileKt+= "mad"
+        checkForTowOfAKind(allFragmentFileNames, allViewModelFileNames)
     }
 
+    private fun checkForTowOfAKind(
+        allFragmentFileNames: MutableList<String>,
+        allViewModelFileNames: MutableList<String>
+    ) {
 
+        for ((counter, string) in allFragmentFileNames.withIndex()) {
 
-    if (allFragmentFileNames[counter]!!.contains(allViewModelFileNames[counter].toString())) {
-           fileKt += (allFragmentFileNames[1].toString())
-       }
+            fileKt += if (regexFragmentSplit.split(string) == regexViewModelSplit.split(
+                    allViewModelFileNames[counter]
+                )
+            ) {
+                " heureka "
+            } else {
+                " nahhBro "
+            }
+        }
 
+        for ((counter, string) in allViewModelFileNames.withIndex()) {
 
+            fileKt += if (regexViewModelSplit.split(string) == regexFragmentSplit.split(
+                    allFragmentFileNames[counter]
+                )
+            ) {
+                " heureka "
+            } else {
+                " nahhBro "
+            }
+        }
 
-    //  fileKt+= (allFragmentFileNames[1].toString())
-    /*  if (allFragmentFileNames[1]?.contains(allViewModelFileNames[1].toString()) == true){
-           fileKt+= "heureka"
-      }*/
+        //Test Code:
 
-    //Test Code:
+        for (String in allFragmentFileNames) {
+            fileKt += ("$String ")
+        }
 
-    for (String in allFragmentFileNames) {
-        fileKt += ("$String ")
+        for (String in allViewModelFileNames) {
+            fileKt += ("$String ")
+        }
     }
-
-    for (String in allViewModelFileNames) {
-        fileKt += ("$String ")
-    }
-}
 
 
 // ! "VordererTeil" + "Fragment" als map machen um abzugleichen ob der "Vordere Teil" auch in der anderen map verfügbar ist!!!
@@ -161,17 +148,17 @@ private fun checkForTowOfAKind(
 //nicht nach Upper sondern nach Regex Splitten den ich selber rein gebe
 //wegen z.B. MainTripFragment -> Main Trip Fragment
 
-//private val file: OutputStream // in Visitor
-inner class Visitor() : KSVisitorVoid() {
+    //private val file: OutputStream // in Visitor
+    inner class Visitor() : KSVisitorVoid() {
 
-    override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: Unit) {
-    }
+        override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: Unit) {
+        }
 
-    override fun visitPropertyDeclaration(property: KSPropertyDeclaration, data: Unit) {
-    }
+        override fun visitPropertyDeclaration(property: KSPropertyDeclaration, data: Unit) {
+        }
 
-    override fun visitTypeArgument(typeArgument: KSTypeArgument, data: Unit) {
+        override fun visitTypeArgument(typeArgument: KSTypeArgument, data: Unit) {
+        }
     }
-}
 }
 
