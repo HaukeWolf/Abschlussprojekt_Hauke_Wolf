@@ -4,6 +4,7 @@ import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.validate
 import java.io.OutputStream
+import java.util.logging.Logger
 
 class KSPProcessor(
     private val codeGenerator: CodeGenerator,
@@ -14,12 +15,11 @@ class KSPProcessor(
     lateinit var file: OutputStream
     var invoked = false
 
-    //Gibt es da einen Besseren Weg? Habe bis jetzt keinen anderen weg gefunden
     private val regexFragment = "(.+)Fragment".toRegex()
     private val regexViewModel = "(.+)ViewModel".toRegex()
 
-    val regexFragmentSplit = "Fragment".toRegex()
-    val regexViewModelSplit = "ViewModel".toRegex()
+    private val regexFragmentSplit = "Fragment".toRegex()
+    private val regexViewModelSplit = "ViewModel".toRegex()
 
     operator fun OutputStream.plusAssign(str: String) {
         this.write(str.toByteArray())
@@ -31,6 +31,7 @@ class KSPProcessor(
 
     private val fileKt =
         codeGenerator.createNewFile(Dependencies(false), "", "ProcessedFiles", "kt")
+
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = resolver.getSymbolsWithAnnotation("com.cgi.kspAnnotations.FunctionTemp")
@@ -76,27 +77,29 @@ class KSPProcessor(
         sortFilesByFunction(allKSFileNames)
     }
 
+
+    val LOG = Logger.getLogger(this.javaClass.name)
+
+    fun foo() {
+        logger.warn("Hello from MyClass")
+    }
+
+
     private fun sortFilesByFunction(allKSFileNames: MutableList<String>) {
 
         val allFragmentFileNames: MutableList<String> = mutableListOf()
         val allViewModelFileNames: MutableList<String> = mutableListOf()
 
-        //Überhaupt nicht hübsch I know =/ wusste mir nicht anders zu helfen //
-        //Update: auch super unnötig hab ich nur noch zu testzwecken drin damit alle Itmes in der map "Gegenüber" liegen
-        var listPositionsCounter = 0
-
         for ((counter) in allKSFileNames.withIndex()) {
 
             regexFragment.find(allKSFileNames[counter])
                 ?.let {
-                    allFragmentFileNames.add(listPositionsCounter, it.value)
-
-                    listPositionsCounter++
+                    allFragmentFileNames.add(it.value)
                 }
 
             regexViewModel.find(allKSFileNames[counter])
                 ?.let {
-                    allViewModelFileNames.add(listPositionsCounter - 1, it.value)
+                    allViewModelFileNames.add(it.value)
                 }
         }
         checkForTowOfAKind(allFragmentFileNames, allViewModelFileNames)
@@ -106,47 +109,45 @@ class KSPProcessor(
         allFragmentFileNames: MutableList<String>,
         allViewModelFileNames: MutableList<String>
     ) {
-
         for ((counter, string) in allFragmentFileNames.withIndex()) {
 
-            fileKt += if (regexFragmentSplit.split(string) == regexViewModelSplit.split(
+            if (regexFragmentSplit.split(string) == regexViewModelSplit.split(
                     allViewModelFileNames[counter]
                 )
             ) {
-                " heureka "
+                logger.warn("Success")
             } else {
-                " nahhBro "
+
+                logger.warn("Error from up")
             }
         }
 
+
+        logger.warn("Hello from MyClass")
+
         for ((counter, string) in allViewModelFileNames.withIndex()) {
 
-            fileKt += if (regexViewModelSplit.split(string) == regexFragmentSplit.split(
+            if (regexViewModelSplit.split(string) == regexFragmentSplit.split(
                     allFragmentFileNames[counter]
                 )
             ) {
-                " heureka "
+                logger.warn("Success")
             } else {
-                " nahhBro "
+
+                logger.warn("Error from down")
             }
         }
 
         //Test Code:
 
-        for (String in allFragmentFileNames) {
+/*        for (String in allFragmentFileNames) {
             fileKt += ("$String ")
         }
 
         for (String in allViewModelFileNames) {
             fileKt += ("$String ")
-        }
+        }*/
     }
-
-
-// ! "VordererTeil" + "Fragment" als map machen um abzugleichen ob der "Vordere Teil" auch in der anderen map verfügbar ist!!!
-
-//nicht nach Upper sondern nach Regex Splitten den ich selber rein gebe
-//wegen z.B. MainTripFragment -> Main Trip Fragment
 
     //private val file: OutputStream // in Visitor
     inner class Visitor() : KSVisitorVoid() {

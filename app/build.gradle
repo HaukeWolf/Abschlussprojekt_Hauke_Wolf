@@ -7,6 +7,10 @@ plugins {
 android {
     compileSdk 32
 
+    kotlinOptions {
+        allWarningsAsErrors = true
+    }
+
     defaultConfig {
         applicationId "com.cgi.abschlussprojekt_hauke_wolf"
         minSdk 26

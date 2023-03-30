@@ -9,6 +9,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.cgi.abschlussprojekt_hauke_wolf.databinding.ActivityMainBinding
 import com.cgi.kspAnnotations.FunctionTemp
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.util.logging.Logger
 
 @Target(AnnotationTarget.FUNCTION)
 annotation class FunctionTempFunc(val name: String)
@@ -17,9 +18,13 @@ annotation class FunctionTempFunc(val name: String)
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+     val LOGS = Logger.getLogger(this.javaClass.name)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+         LOGS.warning("WO KOMMT DAS AN")
+
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
