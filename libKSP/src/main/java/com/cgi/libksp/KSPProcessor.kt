@@ -4,7 +4,6 @@ import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.validate
 import java.io.OutputStream
-import java.util.logging.Logger
 
 class KSPProcessor(
     private val codeGenerator: CodeGenerator,
@@ -58,8 +57,6 @@ class KSPProcessor(
         val javaFile = codeGenerator.createNewFile(Dependencies(false), "", "Generated", "java")
         javaFile += ("class Generated {}")
 
-
-
         getAllProcessedFiles(resolver)
 
         invoked = true
@@ -76,14 +73,6 @@ class KSPProcessor(
         }
         sortFilesByFunction(allKSFileNames)
     }
-
-
-    val LOG = Logger.getLogger(this.javaClass.name)
-
-    fun foo() {
-        logger.warn("Hello from MyClass")
-    }
-
 
     private fun sortFilesByFunction(allKSFileNames: MutableList<String>) {
 
@@ -112,7 +101,6 @@ class KSPProcessor(
     //
     // demnächst arbeite ich dann an der Dynamik des vergleiches
     // auch hab ich mich mit der "Nächsten" regel auseinandergesetzt -> Prüfen ob die Processed datein in dem "richtigen" Packet liegen
-
 
 
     private fun checkForTowOfAKind(

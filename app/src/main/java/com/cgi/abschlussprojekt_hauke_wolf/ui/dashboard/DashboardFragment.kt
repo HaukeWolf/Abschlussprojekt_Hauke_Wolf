@@ -11,7 +11,7 @@ import com.cgi.abschlussprojekt_hauke_wolf.databinding.FragmentDashboardBinding
 import com.cgi.kspAnnotations.FunctionTemp
 
 @FunctionTemp(name = "testFromDeshboard")
-class DashboardSSDFragment : Fragment() {
+class DashboardFragment : Fragment() {
 
     private var _binding: FragmentDashboardBinding? = null
 
