@@ -105,10 +105,22 @@ class KSPProcessor(
         checkForTowOfAKind(allFragmentFileNames, allViewModelFileNames)
     }
 
+    // Hallo Paul
+    // Hab hier nicht all zu viel verändert. Deinen Vorschlag eine Liste zu verwenden hab ich angenommen.
+    // So funktioniert es erstmal auf stumpfe weise mit dem vergleichen ^^
+    // hab mich auch mit dem Logger auseinandergesetzt und logge mir schonmal die ergebnisse raus
+    //
+    // demnächst arbeite ich dann an der Dynamik des vergleiches
+    // auch hab ich mich mit der "Nächsten" regel auseinandergesetzt -> Prüfen ob die Processed datein in dem "richtigen" Packet liegen
+
+
+
     private fun checkForTowOfAKind(
         allFragmentFileNames: MutableList<String>,
         allViewModelFileNames: MutableList<String>
     ) {
+
+        // Der Vergeich funktioniert soweit ist aber noch nicht hübsch
         for ((counter, string) in allFragmentFileNames.withIndex()) {
 
             if (regexFragmentSplit.split(string) == regexViewModelSplit.split(
