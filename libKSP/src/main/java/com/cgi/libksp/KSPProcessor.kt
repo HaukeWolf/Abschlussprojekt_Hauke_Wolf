@@ -11,43 +11,37 @@ class KSPProcessor(
     private val options: Map<String, String>
 ) : SymbolProcessor {
 
-    lateinit var file: OutputStream
-    var invoked = false
+    private lateinit var file: OutputStream
+    private var invoked = false
+
+    private val regexFragment = "(.+)Fragment".toRegex()
+    private val regexViewModel = "(.+)ViewModel".toRegex()
+
+
+
+    private val regexFragmentSplit = "Fragment".toRegex()
+    private val regexViewModelSplit = "ViewModel".toRegex()
 
     operator fun OutputStream.plusAssign(str: String) {
         this.write(str.toByteArray())
     }
 
-    fun emit(s: String, indent: String) {
+    private fun emit(s: String, indent: String) {
         file += ("$indent$s\n")
     }
 
     private val fileKt =
         codeGenerator.createNewFile(Dependencies(false), "", "ProcessedFiles", "kt")
-
-
-    // zwei listen
-    //eine Fragmenten Liste
-    //eine Model Liste
-    // aus den jewaligen listen dann das passende paar raussuchen
-
-    // next = kontrolle ob die Datein im gleichen packet sind
-
-
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        val symbols = resolver.getSymbolsWithAnnotation("com.cgi.kspAnnotations.FunctionTemp")
+        val symbols = resolver.getSymbolsWithAnnotation("com.cgi.kspAnnotations.FunctionAnnotationKSP")
             .filterIsInstance<KSClassDeclaration>()
 
-
-        //tempchanges // aus den Symbols kann man sich strings usw vom AnotationAufruf Holen
         if (!symbols.iterator().hasNext()) return emptyList()
 
         if (invoked) {
             return emptyList()
         }
 
-
-        //mit UnitTests abholen
         logger.info(options.entries.toString())
 
         file = codeGenerator.createNewFile(Dependencies(false), "", "TestProcessor", "log")
@@ -63,17 +57,14 @@ class KSPProcessor(
         val javaFile = codeGenerator.createNewFile(Dependencies(false), "", "Generated", "java")
         javaFile += ("class Generated {}")
 
-
         fileKt += ("public class checkAllProcessedFiles{\n")
         fileKt += ("val  allProcessedList: MutableList<String> = mutableListOf() \n")
         fileKt += ("fun allTheProcessedFiles() : MutableList<String> { return allProcessedList }\n")
         fileKt += ("}")
 
+        logger.warn("Processor was started")
         getAllProcessedFiles(resolver)
 
-        // regex setup
-
-        //Konnte nicht verarbeitet werden
         invoked = true
         return symbols.filterNot { it.validate() }.toList()
     }
@@ -113,24 +104,37 @@ class KSPProcessor(
         allViewModelFileNames: MutableList<String>
     ) {
 
+        for ((counter, string) in allFragmentFileNames.withIndex()) {
+            if (regexFragmentSplit.split(string) == regexViewModelSplit.split(allViewModelFileNames[counter])
+            ) {
+                logger.warn("Success for splitting Fragments")
+            } else {
 
+                logger.warn("Error from splitting Fragments")
+            }
+        }
 
+          for ((counter, string) in allViewModelFileNames.withIndex()) {
 
-        if(allFragmentFileNames[1].contains(allViewModelFileNames[1]))
-        for (String in allFragmentFileNames) {
+            if (regexFragment.split(string) == regexViewModel.split(allFragmentFileNames[counter])
+            ) {
+                logger.warn("Success for splitting ViewModels")
+            } else {
+
+                logger.warn("Error from splitting ViewModels")
+            }
+        }
+
+        //Test Code:
+
+/*        for (String in allFragmentFileNames) {
             fileKt += ("$String ")
         }
 
-
+        for (String in allViewModelFileNames) {
+            fileKt += ("$String ")
+        }*/
     }
-
-    /*
-
-    // codeschnipsel zum Testen
-    for (String in allFragmentFileNames) {
-          fileKt += ("$String ")
-      }*/
-
 
     //private val file: OutputStream // in Visitor
     inner class Visitor() : KSVisitorVoid() {
@@ -145,3 +149,4 @@ class KSPProcessor(
         }
     }
 }
+
