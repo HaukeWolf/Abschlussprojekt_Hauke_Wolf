@@ -8,9 +8,9 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.cgi.abschlussprojekt_hauke_wolf.databinding.FragmentDashboardBinding
-import com.cgi.kspAnnotations.FunctionAnnotationKSP
+import com.cgi.kspAnnotations.ClassAnnotationKSP
 
-@FunctionAnnotationKSP(name = "testFromDeshboard")
+@ClassAnnotationKSP(name = "testFromDeshboard")
 class DashboardFragment : Fragment() {
 
     private var _binding: FragmentDashboardBinding? = null

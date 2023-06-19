@@ -7,10 +7,10 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.cgi.abschlussprojekt_hauke_wolf.databinding.ActivityMainBinding
-import com.cgi.kspAnnotations.FunctionAnnotationKSP
+import com.cgi.kspAnnotations.ClassAnnotationKSP
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
- @FunctionAnnotationKSP(name = "FromMain")
+@ClassAnnotationKSP(name = "FromMain")
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
